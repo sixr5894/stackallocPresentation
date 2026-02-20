@@ -31,11 +31,12 @@ namespace StackCalculated
 
         public TrieNode* Next;
 
-        public bool InitializeNext()
+        public bool InitializeNext(TrieNode* allocatedSpace)
         {
+            this.Next = allocatedSpace;
             this.Next[0] = new TrieNode();
             this.Next[1] = new TrieNode();
-            return true;
+            return false;
         }
 
         public int GateWay;
@@ -50,7 +51,7 @@ namespace StackCalculated
         public bool MoveNext(TrieNode* allocatedSpace, bool spaceProvided, out bool spaceNeeded)
         {
             if (spaceNeeded = CurrentNode->Next is null &&
-                (!spaceProvided || (CurrentNode->Next = allocatedSpace) == null || !CurrentNode->InitializeNext()))
+                (!spaceProvided || CurrentNode->InitializeNext(allocatedSpace)))
             {
                 return true;
             }

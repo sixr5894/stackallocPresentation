@@ -13,7 +13,7 @@ namespace PerformanceOptimization
         {
             Random r = new Random();
             IPtoGateway[] load = new IPtoGateway[100_000];
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < load.Length; i++)
             {
                 load[i] = new IPtoGateway
                 {
@@ -24,7 +24,7 @@ namespace PerformanceOptimization
             }
 
             IPtoGateway[] routes = new IPtoGateway[100_000];
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < routes.Length; i++)
             {
                 routes[i] = new IPtoGateway
                 {
@@ -36,20 +36,25 @@ namespace PerformanceOptimization
 
             Thread bigstack = new Thread(() =>
             {
-                //GC.Collect(GC.MaxGeneration,GCCollectionMode.Aggressive, true, true);
+                Stopwatch sw;
+                //for(int i=0;i<2000;i++)
+                //{
+                //    int[] garbage = new int[r.Next(1,100)];
+                //}
+
                 while (!GC.TryStartNoGCRegion(100_000_000)) ;
 
                 long beforeThreadAllocation = GC.GetAllocatedBytesForCurrentThread();
 
-                Stopwatch sw = Stopwatch.StartNew();
-                HeapCalculated.Trie routing = new HeapCalculated.Trie();
-                routing.SetGateways(load, routes);
+                sw = Stopwatch.StartNew();
+                StackCalculated.Trie stackrouting = new StackCalculated.Trie();
+                stackrouting.SetGateways(load, routes);
                 sw.Stop();
                 Console.WriteLine(sw.ElapsedTicks);
 
                 sw = Stopwatch.StartNew();
-                StackCalculated.Trie stackrouting = new StackCalculated.Trie();
-                stackrouting.SetGateways(load, routes);
+                HeapCalculated.Trie routing = new HeapCalculated.Trie();
+                routing.SetGateways(load, routes);
                 sw.Stop();
                 Console.WriteLine(sw.ElapsedTicks);
 
@@ -59,12 +64,12 @@ namespace PerformanceOptimization
                 Console.WriteLine($"Thread allocated exactly {threadAllocatedBytes} bytes.");
                 Console.WriteLine(sw.ElapsedTicks);
                 #region ensure
-                for(int i=0;i<routes.Length;i++)
-                {
-                    uint ip = routes[i].IP;
-                    string ipString = $"{(ip >> 24) & 0xFF}.{(ip >> 16) & 0xFF}.{(ip >> 8) & 0xFF}.{ip & 0xFF}";
-                    Console.WriteLine($"{ipString} goes to -> {routes[i].Gateway}");
-                }
+                //for(int i=0;i<routes.Length;i++)
+                //{
+                //    uint ip = routes[i].IP;
+                //    string ipString = $"{(ip >> 24) & 0xFF}.{(ip >> 16) & 0xFF}.{(ip >> 8) & 0xFF}.{ip & 0xFF}";
+                //    Console.WriteLine($"{ipString} goes to -> {routes[i].Gateway}");
+                //}
                 #endregion
 
             }, 1000_000_000);

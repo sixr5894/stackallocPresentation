@@ -13,6 +13,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <Platforms>AnyCPU;x86;x64;ARM32;ARM64</Platforms>
 	</PropertyGroup>
     
   <PropertyGroup>
@@ -23,8 +24,40 @@
 		<NoWarn>1701;1702;IDE0028;IDE0090;CS1998;CA1822</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090;CS1998;CA1822</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM32'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090;CS1998;CA1822</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090;CS1998;CA1822</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090;CS1998;CA1822</NoWarn>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<NoWarn>1701;1702;IDE0028;IDE0090</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM32'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <NoWarn>1701;1702;IDE0028;IDE0090</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
