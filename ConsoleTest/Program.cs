@@ -11,15 +11,6 @@ namespace PerformanceOptimization
 
         public static void Main()
         {
-            Span<TrieNode> nodes = stackalloc TrieNode[10];
-            TrieNode* main = (TrieNode*)Unsafe.AsPointer( ref nodes[0]);
-            for (int i = 0; i < 10; i++)
-            {
-                Console.WriteLine((uint)main);
-                Console.WriteLine((uint)Unsafe.AsPointer(ref nodes[i]));
-                main++;
-            }
-
             Random r = new Random();
             IPtoGateway[] load = new IPtoGateway[100_000];
             for (int i = 0; i < 100_000; i++)
@@ -45,7 +36,7 @@ namespace PerformanceOptimization
 
             Thread bigstack = new Thread(() =>
             {
-                GC.Collect(GC.MaxGeneration,GCCollectionMode.Aggressive, true, true);
+                //GC.Collect(GC.MaxGeneration,GCCollectionMode.Aggressive, true, true);
                 while (!GC.TryStartNoGCRegion(100_000_000)) ;
 
                 long beforeThreadAllocation = GC.GetAllocatedBytesForCurrentThread();
@@ -68,12 +59,12 @@ namespace PerformanceOptimization
                 Console.WriteLine($"Thread allocated exactly {threadAllocatedBytes} bytes.");
                 Console.WriteLine(sw.ElapsedTicks);
                 #region ensure
-                //for(int i=0;i<routes.Length;i++)
-                //{
-                //    uint ip = routes[i].IP;
-                //    string ipString = $"{(ip >> 24) & 0xFF}.{(ip >> 16) & 0xFF}.{(ip >> 8) & 0xFF}.{ip & 0xFF}";
-                //    Console.WriteLine($"{ipString} goes to -> {routes[i].Gateway}");
-                //}
+                for(int i=0;i<routes.Length;i++)
+                {
+                    uint ip = routes[i].IP;
+                    string ipString = $"{(ip >> 24) & 0xFF}.{(ip >> 16) & 0xFF}.{(ip >> 8) & 0xFF}.{ip & 0xFF}";
+                    Console.WriteLine($"{ipString} goes to -> {routes[i].Gateway}");
+                }
                 #endregion
 
             }, 1000_000_000);

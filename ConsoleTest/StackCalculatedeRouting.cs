@@ -10,13 +10,14 @@ namespace StackCalculated
         public int SubnetMask;
         public int Gateway;
 
-        public readonly bool IsBitSet(int index)
+        public readonly int IsBitSet(int index)
         {
             if (index < 0 || index > 32)
             {
                 throw new InvalidOperationException("Index is out of range.");
             }
-            return (IP & (FirstLeftBit >> index)) == (FirstLeftBit >> index);
+            var temp = (int)(IP & (FirstLeftBit >> index));
+            return temp / (int)(FirstLeftBit >> index);
         }
     }
 
@@ -25,12 +26,17 @@ namespace StackCalculated
         public TrieNode()
         {
             GateWay = -1;
-            Left = null;
-            Right = null;
+            Next = null;
         }
 
-        public TrieNode* Left;
-        public TrieNode* Right;
+        public TrieNode* Next;
+
+        public bool InitializeNext()
+        {
+            this.Next[0] = new TrieNode();
+            this.Next[1] = new TrieNode();
+            return true;
+        }
 
         public int GateWay;
     }
@@ -41,40 +47,16 @@ namespace StackCalculated
         public TrieNode* CurrentNode = startNode;
         public IPtoGateway Load = tobeLoaded;
 
-        public bool MoveNext(TrieNode* allocatedSpace,bool spaceProvided, out bool spaceNeeded)
+        public bool MoveNext(TrieNode* allocatedSpace, bool spaceProvided, out bool spaceNeeded)
         {
-            TrieNode* next = null;
-            spaceNeeded = false;
-            int offset = 0;
-            if (!Load.IsBitSet(Level))
+            if (spaceNeeded = CurrentNode->Next is null &&
+                (!spaceProvided || (CurrentNode->Next = allocatedSpace) == null || !CurrentNode->InitializeNext()))
             {
-                next = CurrentNode->Left;
-            }
-            else
-            {
-                next = CurrentNode->Right;
-                offset++;
-            }
-            if(next is null)
-            {
-                if (spaceProvided)
-                {
-                    //init
-                    allocatedSpace[0] = new TrieNode();
-                    allocatedSpace[1] = new TrieNode();
-                    CurrentNode->Left = &allocatedSpace[0];
-                    CurrentNode->Right = &allocatedSpace[1];
-                    next = &allocatedSpace[offset];
-                }
-                else
-                {
-                    spaceNeeded = true;
-                    return true;
-                }
+                return true;
             }
 
+            CurrentNode = &CurrentNode->Next[Load.IsBitSet(Level)];
             Level++;
-            CurrentNode = next;
             return Level != Load.SubnetMask;
         }
         public void Finilize()
@@ -99,19 +81,13 @@ namespace StackCalculated
             TrieNode* current = ZeroLevel;
             int gateway = -1;
 
-            for (int i = 0; i < 32 && current != null; i++)
+            for (int i = 0; i < 32 && current->Next != null; i++)
             {
-                TrieNode* next;
+                TrieNode next;
                 gateway = current->GateWay >= 0 ? current->GateWay : gateway;
-                if (!request.IsBitSet(i))
-                {
-                    next = current->Left;
-                }
-                else
-                {
-                    next = current->Right;
-                }
-                current = next;
+
+                current = &current->Next[request.IsBitSet(i)];
+
             }
 
             request.Gateway = gateway;
@@ -153,21 +129,21 @@ namespace StackCalculated
             }
         }
 
-        private void Traverse(TrieNode* node)
-        {
-            if (node is null)
-            {
-                return;
-            }
-            if (node->GateWay != -1)
-            {
-                Console.Write(node->GateWay + " ");
-            }
+        //private void Traverse(TrieNode* node)
+        //{
+        //    if (node is null)
+        //    {
+        //        return;
+        //    }
+        //    if (node->GateWay != -1)
+        //    {
+        //        Console.Write(node->GateWay + " ");
+        //    }
 
-            Traverse(node->Left);
+        //    Traverse(node->Left);
 
-            Traverse(node->Right);
-        }
+        //    Traverse(node->Right);
+        //}
     }
 
 }

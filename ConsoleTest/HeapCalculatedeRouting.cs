@@ -38,7 +38,7 @@ namespace HeapCalculated
             for (int i = 0; i < relation.SubnetMask; i++)
             {
                 TrieNode next;
-                if (!relation.IsBitSet(i))
+                if (relation.IsBitSet(i) == 0)
                 {
                     next = (current.Left ??= new TrieNode());
                 }
@@ -61,7 +61,7 @@ namespace HeapCalculated
             {
                 TrieNode next;
                 gateway = current.GateWay >= 0 ? current.GateWay : gateway;
-                if (!request.IsBitSet(i))
+                if (request.IsBitSet(i) == 0)
                 {
                     next = current.Left;
                 }
