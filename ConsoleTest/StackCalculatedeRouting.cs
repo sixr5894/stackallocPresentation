@@ -88,7 +88,7 @@ namespace StackCalculated
 
                 current = &current->Next[request.IsBitSet(i)];
             }
-
+            gateway = current->GateWay >= 0 ? current->GateWay : gateway;
             request.Gateway = gateway;
         }
 
