@@ -12,7 +12,7 @@ namespace PerformanceOptimization
         public static void Main()
         {
             Random r = new Random();
-            IPtoGateway[] load = new IPtoGateway[100_000];
+            IPtoGateway[] load = new IPtoGateway[1_000_000];
             for (int i = 0; i < load.Length; i++)
             {
                 load[i] = new IPtoGateway
@@ -23,7 +23,7 @@ namespace PerformanceOptimization
                 };
             }
 
-            IPtoGateway[] routes = new IPtoGateway[100_000];
+            IPtoGateway[] routes = new IPtoGateway[10_000];
             for (int i = 0; i < routes.Length; i++)
             {
                 routes[i] = new IPtoGateway
@@ -37,26 +37,26 @@ namespace PerformanceOptimization
             Thread bigstack = new Thread(() =>
             {
                 Stopwatch sw;
-                //for(int i=0;i<2000;i++)
-                //{
-                //    int[] garbage = new int[r.Next(1,100)];
-                //}
 
-                while (!GC.TryStartNoGCRegion(100_000_000)) ;
+                #region warm-up stack
+                byte single = 1;
+                WarmUpStack(&single, 700_000_000);
+                #endregion  
 
                 long beforeThreadAllocation = GC.GetAllocatedBytesForCurrentThread();
+                //while(!GC.TryStartNoGCRegion(1_000_000_000)) ; // switch off GC, to boost heapbased.
 
                 sw = Stopwatch.StartNew();
                 StackCalculated.Trie stackrouting = new StackCalculated.Trie();
                 stackrouting.SetGateways(load, routes);
                 sw.Stop();
-                Console.WriteLine(sw.ElapsedTicks);
+                Console.WriteLine($"Stack based {sw.ElapsedTicks}");
 
                 sw = Stopwatch.StartNew();
-                HeapCalculated.Trie routing = new HeapCalculated.Trie();
-                routing.SetGateways(load, routes);
+                HeapCalculated.Trie heaprouting = new HeapCalculated.Trie();
+                heaprouting.SetGateways(load, routes);
                 sw.Stop();
-                Console.WriteLine(sw.ElapsedTicks);
+                Console.WriteLine($"Heap  based {sw.ElapsedTicks}");
 
                 long afterThreadAllocation = GC.GetAllocatedBytesForCurrentThread();
                 long threadAllocatedBytes = afterThreadAllocation - beforeThreadAllocation;
@@ -79,6 +79,17 @@ namespace PerformanceOptimization
 
         }
 
+
+
+        private static void WarmUpStack(byte* ptr, int diff)
+        {
+            byte single = 1;
+            if ((uint)ptr - (uint)&single >= diff)
+            {
+                return;
+            }
+            WarmUpStack(ptr, diff);
+        }
 
         private static int Segregate(List<int> items)
         {

@@ -31,7 +31,7 @@ namespace HeapCalculated
 
         public TrieNode ZeroLevel;
 
-        public void LoadOne(ref IPtoGateway relation)
+        public void LoadOne(IPtoGateway relation)
         {
             TrieNode current = ZeroLevel;
 
@@ -79,8 +79,8 @@ namespace HeapCalculated
         {
             for (int i = 0; i < loads.Length; i++)
             {
-                ref IPtoGateway load = ref loads[i];
-                LoadOne(ref load);
+                IPtoGateway load = loads[i];
+                LoadOne(load);
             }
 
             for (int i = 0; i < toBeSet.Length; i++)

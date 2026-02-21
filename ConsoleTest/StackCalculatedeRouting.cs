@@ -80,15 +80,13 @@ namespace StackCalculated
         public void SetOne(ref IPtoGateway request)
         {
             TrieNode* current = ZeroLevel;
-            int gateway = -1;
+            int gateway = 1;
 
             for (int i = 0; i < 32 && current->Next != null; i++)
             {
-                TrieNode next;
                 gateway = current->GateWay >= 0 ? current->GateWay : gateway;
 
                 current = &current->Next[request.IsBitSet(i)];
-
             }
 
             request.Gateway = gateway;
