@@ -1,7 +1,5 @@
 ﻿using StackCalculated;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Security.AccessControl;
 
 
 namespace PerformanceOptimization

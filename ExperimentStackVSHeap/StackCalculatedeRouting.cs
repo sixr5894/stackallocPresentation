@@ -1,5 +1,4 @@
-﻿using System.Management;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace StackCalculated
 {
@@ -60,6 +59,7 @@ namespace StackCalculated
             Level++;
             return Level != Load.SubnetMask;
         }
+
         public void Finilize()
         {
             CurrentNode->GateWay = Load.Gateway;
@@ -94,7 +94,6 @@ namespace StackCalculated
 
         public void SetGateways(IPtoGateway[] loads, IPtoGateway[] toBeSet)
         {
-            int cunt = 0;
             TrieStatemachine loader = new TrieStatemachine();
             for (int i = 0; i < loads.Length; i++)
             {
@@ -110,13 +109,11 @@ namespace StackCalculated
                     {
                         Span<TrieNode> temp  = stackalloc TrieNode[2];
                         allocatedSpace = (TrieNode*)Unsafe.AsPointer(ref temp[0]);
-                        cunt++;
                     }
                     else
                     {
                         allocatedSpace = null;
                     }
-
                 }
                 loader.Finilize();
             }
@@ -144,5 +141,4 @@ namespace StackCalculated
         //    Traverse(node->Right);
         //}
     }
-
 }
