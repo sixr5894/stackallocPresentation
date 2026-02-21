@@ -44,7 +44,7 @@ namespace PerformanceOptimization
                 #endregion  
 
                 long beforeThreadAllocation = GC.GetAllocatedBytesForCurrentThread();
-                //while(!GC.TryStartNoGCRegion(1_000_000_000)) ; // switch off GC, to boost heapbased.
+                while(!GC.TryStartNoGCRegion(1_000_000_000)) ; // switch off GC, to boost heapbased.
 
                 sw = Stopwatch.StartNew();
                 StackCalculated.Trie stackrouting = new StackCalculated.Trie();

@@ -48,10 +48,10 @@ namespace StackCalculated
         public TrieNode* CurrentNode = startNode;
         public IPtoGateway Load = tobeLoaded;
 
-        public bool MoveNext(TrieNode* allocatedSpace, bool spaceProvided, out bool spaceNeeded)
+        public bool MoveNext(TrieNode* allocatedSpace, out bool spaceNeeded)
         {
             if (spaceNeeded = CurrentNode->Next is null &&
-                (!spaceProvided || CurrentNode->InitializeNext(allocatedSpace)))
+                (allocatedSpace == null || CurrentNode->InitializeNext(allocatedSpace)))
             {
                 return true;
             }
@@ -95,26 +95,26 @@ namespace StackCalculated
         public void SetGateways(IPtoGateway[] loads, IPtoGateway[] toBeSet)
         {
             int cunt = 0;
+            TrieStatemachine loader = new TrieStatemachine();
             for (int i = 0; i < loads.Length; i++)
             {
-                TrieStatemachine loader = new TrieStatemachine(0, ZeroLevel, loads[i]);
+                loader.Load = loads[i];
+                loader.CurrentNode = ZeroLevel;
+                loader.Level = 0;
 
                 TrieNode* allocatedSpace = null;
-                bool spaceProvided = false;
 
-                while (loader.MoveNext(allocatedSpace, spaceProvided, out bool spaceNeeded))
+                while (loader.MoveNext(allocatedSpace, out bool spaceNeeded))
                 {
                     if (spaceNeeded)
                     {
                         Span<TrieNode> temp  = stackalloc TrieNode[2];
                         allocatedSpace = (TrieNode*)Unsafe.AsPointer(ref temp[0]);
-                        spaceProvided = true;
                         cunt++;
                     }
                     else
                     {
                         allocatedSpace = null;
-                        spaceProvided = false;
                     }
 
                 }
